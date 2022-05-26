@@ -45,6 +45,8 @@ class FaseEX():
                     if(not self.memoriaInstrucciones.getInstruccion(0)==instruccion):#que no sea la primera instruccion
                         #Puede usar de entrada de la ALU tanto como los registros de acoplamiento de EXMEM y de MEMWB
                         #AHORA VOY A PREGUNTAR SI LA INSTRUCCION ES ANTERIOR ES LW, PORQUE CREO BURBUJA Y BORRO
+                        q=instruccion.getRs()
+                        hi=instruccion.getRs()
                         if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(instruccion.getRs())):
                             if(len(self.registrosAcumulados["FaseMEM"])!=0):
                                 instruccionAnterior = self.registrosAcumulados["FaseMEM"][0]
@@ -52,7 +54,8 @@ class FaseEX():
                                     if(instruccionAnterior.getRt()==instruccion.getRs()):
                                         #necesito borrar la instruccion actual y colocar un None
                                         self.borrarInstruccion(instruccion)
-                                    elif(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(instruccion.getRs())):
+                                elif(instruccion.esTipoR()):
+                                    if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(instruccion.getRs())):
                                         rs=self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(instruccion.getRs())
                         elif(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(instruccion.getRt())):
                             if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(instruccion.getRt())):
