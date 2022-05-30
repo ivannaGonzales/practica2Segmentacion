@@ -33,6 +33,9 @@ class FaseID():
                     registros.append(rs)
                     registros.append(rt)
                     self.calculoDeDireccionRamificacion(registros)
+                    #voy a agregar lo otro
+                    pcIncrementado=regAnterior[1]
+                    registros.append(pcIncrementado)
                     #tengo que decirle a la siguiente fase de IF que hay que intoducir una isntruccion nula
                 elif(instruccion.esLw()):
                     rs=self.bancoDeRegistros.getContenido(instruccion.getRs())

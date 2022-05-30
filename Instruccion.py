@@ -7,7 +7,7 @@ class Instruccion():
     def getTipo(self):
         return self.tipo
     def getRs(self):
-        return self.rs
+
     def getRt(self):
         return self.rt
     def esLw(self):

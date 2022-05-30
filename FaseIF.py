@@ -28,8 +28,16 @@ class FaseIF():
         if(len(self.registrosAcumulados["FaseIF"])!=0):
             #borro la instruccion anterior
             self.registrosAcumulados["FaseIF"] = []
-        pcIncrementado=self.pc + 1
+        if(self.pc == len(self.memoriaInstrucciones.getMemoriaDeInstrucciones())):
+            pcIncrementado = self.pc
+        else:
+            pcIncrementado=self.pc + 1
         registros=self.registrosAcumulados["FaseIF"]
         registros.append(instruccionActual)
         registros.append(pcIncrementado)
+        #si la instruccion es beq
+        if(instruccionActual != None):
+
+            if(instruccionActual.esBeq()):
+                registros.append(pcIncrementado)
         return registros

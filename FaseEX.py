@@ -50,13 +50,13 @@ class FaseEX():
                         if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(instruccion.getRs())):
                             if(len(self.registrosAcumulados["FaseMEM"])!=0):
                                 instruccionAnterior = self.registrosAcumulados["FaseMEM"][0]
-                                if(instruccionAnterior.esLw()):
-                                    if(instruccionAnterior.getRt()==instruccion.getRs()):
-                                        #necesito borrar la instruccion actual y colocar un None
-                                        self.borrarInstruccion(instruccion)
-                                elif(instruccion.esTipoR()):
-                                    if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(instruccion.getRs())):
-                                        rs=self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(instruccion.getRs())
+                                if(instruccionAnterior != None):
+                                    if(instruccionAnterior.esLw()):
+                                        if(instruccionAnterior.getRt()==instruccion.getRs()):
+                                            #necesito borrar la instruccion actual y colocar un None
+                                            self.borrarInstruccion(instruccion)
+                            if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(instruccion.getRs())):
+                                rs=self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(instruccion.getRs())
                         elif(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(instruccion.getRt())):
                             if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(instruccion.getRt())):
                                 rt=self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(instruccion.getRt())
@@ -73,10 +73,10 @@ class FaseEX():
                     if (not self.memoriaInstrucciones.getInstruccion(0) == instruccion):  # que no sea la primera instruccion
                         # Puede usar de entrada de la ALU tanto como los registros de acoplamiento de EXMEM y de MEMWB
                         if (self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(instruccion.getRs())):
-                            if (self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento):
+                            if (self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(instruccion.getRs())):
                                 rs = self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(
                                     instruccion.getRs())
-                        elif (self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(instruccion.getRt())):
+                        if (self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(instruccion.getRt())):
                             if (self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(instruccion.getRt())):
                                 rt=self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(
                                     instruccion.getRt())
@@ -85,8 +85,9 @@ class FaseEX():
                     regSiguiente.append(rs)
                     regSiguiente.append(rt)
                     regSiguiente.append(resultado)
-                    if(resultado==0):#es que son iguales y por lo tanto salta
-                        regSiguiente.append(pcRamificacion)
+                    regSiguiente.append(pcRamificacion)
+                    pcIncrementado=registrosAnteriores[4]
+                    regSiguiente.append(pcIncrementado)
     def borrarInstruccion(self,instruccion):
         #Hasta aqui tengo que borrar la fase IF,ID y la EX
         self.registrosAcumulados["FaseEX"]=[]
