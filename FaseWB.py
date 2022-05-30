@@ -10,58 +10,89 @@ class FaseWB():
         if(len(self.registrosAcumulados["FaseWB"])!=0):
             self.memoriaRegistrosDeAcoplamiento.borrarRegistroDeAcoplamiento("FaseMEMWB")
             self.registrosAcumulados["FaseWB"]=[]
-        if(len(self.registrosAcumulados["FaseIF"])!=0):
-            registros=self.registrosAcumulados["FaseWB"]
-            instruccionAnterior=self.registrosAcumulados["FaseIF"][0]
-            if(instruccionAnterior!=None):
-                if(instruccionAnterior.esTipoJ()):
-                    registros.append(-1)#significa que tenego que introducir un None
-                elif(instruccionAnterior.esBeq()):
-                    registros.append(-1)
-                else:
-                    registros.append(self.registrosAcumulados["FaseIF"][1])#Aqui seria lo normal
-            else:
-                #La instruccion anterior a none era una instruccion beq
-                if (len(self.registrosAcumulados["FaseEX"]) == 5):
-                    registros = self.registrosAcumulados["FaseWB"]
-                    registros.append(self.registrosAcumulados["FaseEX"][4])
-                elif(len(self.registrosAcumulados["FaseID"])!=0):
-                    instruccionID=self.registrosAcumulados["FaseID"][0]
-                    if(instruccionID!=None):
-                        if(instruccionID.esTipoJ()):
-                            # La instruccion anterior a none era una instruccion j
-                            calculoDeDireccionDeSalto=self.registrosAcumulados["FaseID"][1]
-                            registros = self.registrosAcumulados["FaseWB"]
-                            registros.append(calculoDeDireccionDeSalto)
-                        elif(instruccionID.esBeq()):
-                            registros.append(-1)
-                    else:
-                        #Tambien es none
-                        registros.append(-2)
+        self.escrituraDelNuevoValorPC()
+        self.escribirEnBancoDeRegistros()
+        return self.comprobarUltimaInstruccion()
 
-                #aqui seria si una instruccion es none, solo none sin incrementar
-        if(len(self.registrosAcumulados["FaseMEM"])>=2):
-            registrosAnteriores=self.registrosAcumulados["FaseMEM"]
-            instruccion=registrosAnteriores[0]
-            if(instruccion!=None):
-                if(instruccion.esTipoR()):
-                    #guardo registro de acoplamiento entre MEM/WB
-                    rd=instruccion.getRd()
-                    contenido=registrosAnteriores[1]
-                    self.memoriaRegistrosDeAcoplamiento.agregarContenidoEnRegistroAcoplamiento(rd,contenido,"FaseMEMWB")
-                    self.bancoDeRegistros.agregarRegistro(contenido,rd)
+
+
+    def escribirEnBancoDeRegistros(self):
+        if (len(self.registrosAcumulados["FaseMEM"]) >= 2):
+            registrosAnteriores = self.registrosAcumulados["FaseMEM"]
+            instruccion = registrosAnteriores[0]
+            if (instruccion != None):
+                if (instruccion.esTipoR()):
+                    # guardo registro de acoplamiento entre MEM/WB
+                    rd = instruccion.getRd()
+                    contenido = registrosAnteriores[1]
+                    self.memoriaRegistrosDeAcoplamiento.agregarContenidoEnRegistroAcoplamiento(rd, contenido,
+                                                                                               "FaseMEMWB")
+                    self.bancoDeRegistros.agregarRegistro(contenido, rd)
                     self.registrosAcumulados["FaseWB"].append(rd)
-                elif(instruccion.esLw()):
-                    rt=instruccion.getRt()
-                    contenido=registrosAnteriores[1]
-                    self.memoriaRegistrosDeAcoplamiento.agregarContenidoEnRegistroAcoplamiento(rt, contenido,"FaseMEMWB")
-                    self.bancoDeRegistros.agregarRegistro(contenido,rt)
-        elif(len(self.registrosAcumulados["FaseMEM"])!=0):
-            h = self.memoriaDeInstrucciones
-            instruccion=self.registrosAcumulados["FaseMEM"][0]
-            p=self.registrosAcumulados["FaseIF"][1]
-            g=len(self.memoriaDeInstrucciones)
-            if(self.registrosAcumulados["FaseIF"][1]==len(self.memoriaDeInstrucciones) and instruccion==None):
-                    self.parar=True
+                elif (instruccion.esLw()):
+                    rt = instruccion.getRt()
+                    contenido = registrosAnteriores[1]
+                    self.memoriaRegistrosDeAcoplamiento.agregarContenidoEnRegistroAcoplamiento(rt, contenido,
+                                                                                               "FaseMEMWB")
+                    self.bancoDeRegistros.agregarRegistro(contenido, rt)
+
+    def introducirBurbuja(self):
+        registros = self.registrosAcumulados["FaseWB"]
+        registros.append(-1)
+
+    def escrituraDelNuevoValorPC(self):
+        registros = self.registrosAcumulados["FaseWB"]
+        instruccionFaseIF= self.getInstruccionEnFaseIF()
+        if(instruccionFaseIF != None):
+            if(instruccionFaseIF.esBeq()):
+                self.introducirBurbuja() #Primera Burbuja
+            elif(instruccionFaseIF.esTipoJ()):
+                self.introducirBurbuja()
+            else: #de manera normal
+                    registros.append(self.registrosAcumulados["FaseIF"][1])
+        instruccionEnFaseID=self.getInstruccionEnFaseID()
+        if(instruccionEnFaseID != None):
+            if(instruccionEnFaseID.esBeq()):
+                self.introducirBurbuja() #Segunda burbuja
+            elif(instruccionEnFaseID.esTipoJ()):
+                #escribir pcsalto
+                pcSalto=self.registrosAcumulados["FaseID"][1]
+                registros.append(pcSalto)
+
+        if(len(self.registrosAcumulados["FaseEX"]) == 6):
+            self.escribirSaltoBeq()
+        else:
+            if(len(self.registrosAcumulados["FaseIF"] )!= 0):
+                registros.append(self.registrosAcumulados["FaseIF"][1])#normal otra vez, por quee ?
+
+    def getInstruccionEnFaseID(self):
+        if(len(self.registrosAcumulados["FaseID"]) != 0):
+            instruccionID=self.registrosAcumulados["FaseID"][0]
+            return instruccionID
+    def getInstruccionEnFaseIF(self):
+        if (len(self.registrosAcumulados["FaseIF"]) != 0):
+            instruccionAnterior = self.registrosAcumulados["FaseIF"][0]
+            return instruccionAnterior
+    def escribirSaltoBeq(self):
+        # La instruccion anterior a none era una instruccion beq
+        registros=self.registrosAcumulados["FaseWB"]
+        if(self.registrosAcumulados["FaseEX"][3]==0): #es decir que si se produce el salto
+            registros = self.registrosAcumulados["FaseWB"]
+            registros.append(self.registrosAcumulados["FaseEX"][4])#se introduce la direccion de salt
+        else:
+            registros.append(self.registrosAcumulados["FaseEX"][5]) #se introduce la direccion de salto
+
+    def comprobarUltimaInstruccion2(self):
+        #aqui ya deberia parar
+        if (len(self.registrosAcumulados["FaseMEM"]) >= 2):
+            if(len(self.registrosAcumulados["FaseIF"]) > 0):
+                if(self.registrosAcumulados["FaseIF"][1] == len(self.memoriaDeInstrucciones)):
+                    self.parar = True
                     self.registrosAcumulados["FaseWB"].append(self.parar)
                     return self.parar
+    def comprobarUltimaInstruccion(self):
+        if(len(self.registrosAcumulados["FaseMEM"])!= 0):
+            if(self.registrosAcumulados["FaseID"][0]==None and self.registrosAcumulados["FaseEX"][0] == None
+            and self.registrosAcumulados["FaseIF"][0]==None and self.registrosAcumulados["FaseMEM"][0]==None):
+                return True
+        return False

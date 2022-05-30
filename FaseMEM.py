@@ -32,3 +32,4 @@ class FaseMEM():
                     resultado=registrosFaseEX[3]
                     #instruccion y resultado
                     regSiguiente.append(resultado)
+

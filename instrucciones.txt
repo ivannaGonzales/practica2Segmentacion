@@ -1,3 +1,4 @@
-add $t1,$t1,$t3
-sub $t2,$t1,$s0
-add $s2,$t1,$s2
+while:
+    add $t1,$t2,$s0
+j while
+add $s0,$t1,$s0
