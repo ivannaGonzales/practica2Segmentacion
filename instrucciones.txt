@@ -1,2 +1,19 @@
-lw $t1,0($s0)
-add $t3,$t3,$t1
+sw $s0,0($s2)
+add $t1,$t1,$t3
+sub $t1,$t1,$t3
+lw $t4,0($s2)
+sub $t1,$t1,$t4
+add $t1,$t1,$t4
+mul $t4,$t2,$t1
+while:
+	beq $t1,$t2,end
+	add $t1,$t1,$t5
+	add $t4,$t2,$t1
+	j while
+end :
+    beq $t1,$t1,fin
+	mul $t2,$t1,$t1
+fin:
+    lw $t2,1($t1)
+	sw $t4,1($t2)
+	mul $t4,$t4,$t2

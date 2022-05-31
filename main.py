@@ -22,7 +22,7 @@ def crearInstruccion(linea,memoriaRegistrosDeAcoplamientoyFinales):
         instruccion=TipoJ(tipo,etiqueta)
     registros=contenidoInstruccion[1]
     registros=registros.split(",")
-    if(tipo=="add" or tipo=="sub"):
+    if(tipo=="add" or tipo=="sub" or tipo=="mul"):
         rd=registros[0]
         memoriaRegistrosDeAcoplamientoyFinales.agregarRegistroFinal(rd)
         rs=registros[1]
@@ -56,12 +56,12 @@ def iniciarNotengoNiIdea(memoriaInstrucciones, bancoDeRegistros, alu, memoria, p
     parar=False
     #puedo tener algo asi como, una memoria de registros que sean destino, entonce
     while i <= len(memoriaInstrucciones.getMemoriaDeInstrucciones()) and not parar:
-        faseWB = FaseWB(bancoDeRegistros, registrosAcumulados,parar,memoriaInstrucciones.getMemoriaDeInstrucciones(),
+        faseWB = FaseWB(bancoDeRegistros, registrosAcumulados,parar,
                         memoriaRegistrosDeAcoplamiento)#acaba cuanfo el acaba
         parar=faseWB.iniciar()  # escribe en registros
         faseMEM = FaseMEM(registrosAcumulados, memoria,memoriaRegistrosDeAcoplamiento)
         faseMEM.iniciar()  # escribe o leo en memoria
-        faseEX = FaseEX(registrosAcumulados, alu,memoriaRegistrosDeAcoplamiento,memoriaInstrucciones)
+        faseEX = FaseEX(registrosAcumulados, alu,memoriaRegistrosDeAcoplamiento)
         faseEX.iniciar()  # ejecuta los datos
         faseID = FaseID(registrosAcumulados, bancoDeRegistros,etiquetas)  # lee en registros
         faseID.iniciar()  # devuelve rs y rt
@@ -95,4 +95,6 @@ def iniciarSimulacion():
             memoriaInstrucciones.agregarInstruccion(pos,instruccion)
             pos = pos + 1
     iniciarNotengoNiIdea(memoriaInstrucciones,bancoDeRegistros,alu,memoria,0,etiquetas,memoriaRegistrosDeAcoplamientoyFinales)
+    print(bancoDeRegistros.getBancoDeRegistros())
+    print(memoria.getMemoria())
 iniciarSimulacion()

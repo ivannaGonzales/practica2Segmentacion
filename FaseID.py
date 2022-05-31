@@ -1,14 +1,15 @@
 #Decodificacion, lectura de operandos fuente y calculo de direccion de ramificacion
-class FaseID():
+from Fase import Fase
+
+
+class FaseID(Fase):
     def __init__(self,registrosAcumulados,bancoDeRegistros,etiquetas):
-        self.registrosAcumulados=registrosAcumulados
+        Fase.__init__(self,registrosAcumulados)
         self.bancoDeRegistros=bancoDeRegistros
         self.etiquetas=etiquetas
 
     def iniciar(self):
-        if(len(self.registrosAcumulados["FaseID"])!=0):
-            #borro su fase
-            self.registrosAcumulados["FaseID"]=[]
+        self.borrarFase("FaseID")
         if(len(self.registrosAcumulados["FaseIF"])!=0):
             registros = self.registrosAcumulados["FaseID"]
             regAnterior=self.registrosAcumulados["FaseIF"]

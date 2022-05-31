@@ -3,4 +3,5 @@ li $s0,3
 li $t1,2
 li $s2,1
 li $t4,4
-li $t2,20
+li $t2,3
+li $t5,1

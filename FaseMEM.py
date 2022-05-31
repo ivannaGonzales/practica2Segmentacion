@@ -1,16 +1,18 @@
-class FaseMEM():
+from Fase import Fase
+
+
+class FaseMEM(Fase):
     def __init__(self,registrosAcumulados,memoria,memoriaRegistroDeAcoplamiento):
-        self.registrosAcumulados=registrosAcumulados
+        Fase.__init__(self,registrosAcumulados)
         self.memoria=memoria
         self.memoriaRegistrosDeAcoplamiento=memoriaRegistroDeAcoplamiento
 
 
     def iniciar(self):
         if(len(self.registrosAcumulados["FaseEX"])!=0):
-            if(len(self.registrosAcumulados["FaseMEM"])!=0):
-                #borro el registro de acoplamiento anterior
+            self.borrarFase("FaseMEM")
+            if (len(self.registrosAcumulados["FaseMEM"]) != 0):
                 self.memoriaRegistrosDeAcoplamiento.borrarRegistroDeAcoplamiento("FaseEXMEM")
-                self.registrosAcumulados["FaseMEM"]=[]
             registrosFaseEX=self.registrosAcumulados.get("FaseEX")
             instruccion=registrosFaseEX[0]
             regSiguiente = self.registrosAcumulados["FaseMEM"]

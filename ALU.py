@@ -8,4 +8,6 @@ class ALU():
             resultado=op1+op2
         elif(op=="resta"):
             resultado=op1-op2
+        else:
+            resultado=op1*op2
         return resultado

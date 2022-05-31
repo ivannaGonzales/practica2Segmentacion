@@ -17,6 +17,8 @@ class TipoR(Instruccion):
             op="suma"
         elif(self.tipo=="sub"):
             op="resta"
+        else:
+            op="multiplicacion"
         return op
 
 

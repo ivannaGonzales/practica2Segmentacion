@@ -12,3 +12,4 @@ class TipoI(Instruccion):
     def getRt(self):
         return self.rt
 
+
