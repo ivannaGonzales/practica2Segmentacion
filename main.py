@@ -20,7 +20,6 @@ def crearInstruccion(linea,memoriaRegistrosDeAcoplamientoyFinales):
     if(tipo=="j"):
         etiqueta=contenidoInstruccion[1]
         instruccion=TipoJ(tipo,etiqueta)
-        return instruccion
     registros=contenidoInstruccion[1]
     registros=registros.split(",")
     if(tipo=="add" or tipo=="sub"):

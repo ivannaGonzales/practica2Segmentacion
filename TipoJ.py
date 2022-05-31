@@ -1,6 +1,8 @@
-class TipoJ():
+from Instruccion import Instruccion
+
+class TipoJ(Instruccion):
     def __init__(self,tipo,etiqueta):
-        self.tipo=tipo
+        Instruccion.__init__(self, tipo)
         self.etiqueta=etiqueta
     def getEtiqueta(self):
         return self.etiqueta

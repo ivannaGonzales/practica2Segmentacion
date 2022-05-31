@@ -1,4 +1,2 @@
-while:
-    add $t1,$t2,$s0
-j while
-add $s0,$t1,$s0
+lw $t1,0($s0)
+add $t3,$t3,$t1

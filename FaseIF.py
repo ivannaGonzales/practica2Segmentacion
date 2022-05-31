@@ -25,6 +25,9 @@ class FaseIF():
     def iniciar(self):
         #solo me da la instruccion
         instruccionActual = self.getInstruccionLeida()
+        #quiero comprobar que la instruccion actual es lw y la anterior es un None
+        if(len(self.registrosAcumulados["FaseIF"])!=0):
+            pcInstruccionAnterior=self.registrosAcumulados["FaseIF"][1]
         if(len(self.registrosAcumulados["FaseIF"])!=0):
             #borro la instruccion anterior
             self.registrosAcumulados["FaseIF"] = []
@@ -37,7 +40,9 @@ class FaseIF():
         registros.append(pcIncrementado)
         #si la instruccion es beq
         if(instruccionActual != None):
-
             if(instruccionActual.esBeq()):
                 registros.append(pcIncrementado)
+        else:
+            registros.append(pcIncrementado + 1)
+
         return registros
