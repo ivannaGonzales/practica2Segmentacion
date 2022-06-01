@@ -22,6 +22,8 @@ class Instruccion():
         return self.tipo=="add" or self.tipo=="sub" or self.tipo=="mul"
     def esBeq(self):
         return self.tipo =="beq"
+    def esVacia(self):
+        return self ==None
 
 
 

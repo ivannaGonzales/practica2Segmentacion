@@ -48,7 +48,7 @@ class FaseID(Fase):
             if(instruccion!=None):
                 if(instruccion.esBeq()):
                     etiqueta=instruccion.getEtiqueta()
-                    numInstruccion=self.etiquetas.getNumInstruccion(etiqueta)
+                    numInstruccion=self.etiquetas.getValor(etiqueta)
                     pcRamificacion=numInstruccion
                     registros.append(pcRamificacion)
     def calculoDeDireccionSalto(self,registros):
@@ -57,6 +57,6 @@ class FaseID(Fase):
             if(instruccion!=None):
                 if(instruccion.esTipoJ()):
                     etiqueta=instruccion.getEtiqueta()
-                    numInstruccion = self.etiquetas.getNumInstruccion(etiqueta)
+                    numInstruccion = self.etiquetas.getValor(etiqueta)
                     pcSalto = numInstruccion
                     registros.append(pcSalto)

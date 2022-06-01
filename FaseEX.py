@@ -21,7 +21,7 @@ class FaseEX(Fase):
                 if(instruccion.esLw()):
                     offset=instruccion.getOffset()
                     rsID=registrosAnteriores[1]
-                    rs = self.comprobarRegistroAcoplamiento(instruccion, instruccion.getRs(), rsID)
+                    rs = self.comprobarRegistroAcoplamiento(instruccion.getRs(), rsID)
                     direccionMemoria=self.alu.getResultado(offset,rs,"suma")
                     regSiguiente.append(rs)
                     regSiguiente.append(direccionMemoria)
@@ -29,18 +29,24 @@ class FaseEX(Fase):
                     offset=instruccion.getOffset()
                     rsID=registrosAnteriores[1]
                     rtID=registrosAnteriores[2]
-                    rs = self.comprobarRegistroAcoplamiento(instruccion, instruccion.getRs(), rsID)
-                    rt = self.comprobarRegistroAcoplamiento(instruccion, instruccion.getRt(), rtID)
+                    rs = self.comprobarRegistroAcoplamiento(instruccion.getRs(), rsID)
+                    rt = self.comprobarRegistroAcoplamiento(instruccion.getRt(), rtID)
                     direccionMemoria = self.alu.getResultado(offset, rs, "suma")
                     regSiguiente.append(rs)
                     regSiguiente.append(rt)
                     regSiguiente.append(direccionMemoria)
                 elif(instruccion.esTipoR()):
+
+
                     rsID=registrosAnteriores[1]
                     rtID=registrosAnteriores[2]
+
                     # Puede usar de entrada de la ALU tanto como los registros de acoplamiento de EXMEM y de MEMWB
-                    rs=self.comprobarRegistroAcoplamiento(instruccion,instruccion.getRs(),rsID)
-                    rt=self.comprobarRegistroAcoplamiento(instruccion,instruccion.getRt(),rtID)
+
+                    rs=self.comprobarRegistroAcoplamiento(instruccion.getRs(),rsID)
+                    rt=self.comprobarRegistroAcoplamiento(instruccion.getRt(),rtID)
+
+
                     if(instruccion.esAdd()):
                         resultado=self.alu.getResultado(rs,rt,"suma")
                     elif(instruccion.esSub()):
@@ -54,8 +60,8 @@ class FaseEX(Fase):
                 elif(instruccion.esBeq()):
                     rsID = registrosAnteriores[1] #valor numerico
                     rtID = registrosAnteriores[2]
-                    rs=self.comprobarRegistroAcoplamiento(instruccion,instruccion.getRs(),rsID)
-                    rt=self.comprobarRegistroAcoplamiento(instruccion,instruccion.getRt(),rtID)
+                    rs=self.comprobarRegistroAcoplamiento(instruccion.getRs(),rsID)
+                    rt=self.comprobarRegistroAcoplamiento(instruccion.getRt(),rtID)
                     resultado = self.alu.getResultado(rs, rt, "resta")
                     pcRamificacion=registrosAnteriores[3]
                     regSiguiente.append(rs)
@@ -67,15 +73,12 @@ class FaseEX(Fase):
 
 
 
-    def comprobarRegistroAcoplamiento(self,instruccion,registro,registroNumerico):
-        #registro es $t1 por ejemplo
-        #registro numerico es 8 por ejemplo
+    def comprobarRegistroAcoplamiento(self,registro,registroNumerico):
         nuevoRegistro=registroNumerico
-            # Puede usar de entrada de la ALU tanto como los registros de acoplamiento de EXMEM y de MEMWB
         if (self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(registro)):
             if (self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(registro)):
                 nuevoRegistro= self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(
-                    registro) #me devuelve un valor numerico
+                    registro)
         return nuevoRegistro
 
 

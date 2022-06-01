@@ -13,6 +13,8 @@ class FaseMEM(Fase):
             self.borrarFase("FaseMEM")
             if (len(self.registrosAcumulados["FaseMEM"]) != 0):
                 self.memoriaRegistrosDeAcoplamiento.borrarRegistroDeAcoplamiento("FaseEXMEM")
+
+
             registrosFaseEX=self.registrosAcumulados.get("FaseEX")
             instruccion=registrosFaseEX[0]
             regSiguiente = self.registrosAcumulados["FaseMEM"]
@@ -30,7 +32,10 @@ class FaseMEM(Fase):
                 elif(instruccion.esTipoR()):
                     #tengo que borrar el anterior registro de acoplamiento
                     registroEXMEM=registrosFaseEX[3]
-                    self.memoriaRegistrosDeAcoplamiento.agregarContenidoEnRegistroAcoplamiento(instruccion.getRd(),registroEXMEM,"FaseEXMEM")
+
+                    self.memoriaRegistrosDeAcoplamiento.agregarContenidoEnRegistroAcoplamiento\
+                        (instruccion.getRd(),registroEXMEM,"FaseEXMEM")
+
                     resultado=registrosFaseEX[3]
                     #instruccion y resultado
                     regSiguiente.append(resultado)

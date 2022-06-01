@@ -1,3 +1,4 @@
+from Estructura import Estructura
 from MemoriaDeInstrucciones import MemoriaDeInstrucciones
 from Instruccion import Instruccion
 from TipoI import TipoI
@@ -45,7 +46,7 @@ def crearInstruccion(linea,memoriaRegistrosDeAcoplamientoyFinales):
     return instruccion
 
 
-def iniciarNotengoNiIdea(memoriaInstrucciones, bancoDeRegistros, alu, memoria, pc, etiquetas,memoriaRegistrosDeAcoplamiento):
+def inicio(memoriaInstrucciones, bancoDeRegistros, alu, memoria, pc, etiquetas,memoriaRegistrosDeAcoplamiento):
     i = 0
     registrosAcumulados = {}  # se va acumulando todos los registros
     registrosAcumulados["FaseID"] = []
@@ -72,16 +73,16 @@ def iniciarSimulacion():
     f = open('instrucciones.txt', 'r')
     pos=0
     memoria={}
-    memoria=Memoria(memoria)
-    memoria.iniciar()
+    memoria=Estructura(memoria)
+    memoria.iniciar('memoria.txt',"numero")
     memoriaDeInstrucciones={}
     memoriaInstrucciones=MemoriaDeInstrucciones(memoriaDeInstrucciones)
     bancoDeRegistros={}
-    bancoDeRegistros=BancoDeRegistros(bancoDeRegistros)
+    bancoDeRegistros=Estructura(bancoDeRegistros)
     etiquetas={}
-    etiquetas=MemoriaDeEtiquetas(etiquetas)
-    etiquetas.iniciarMemoriaDeEtiquetas()
-    bancoDeRegistros.iniciarbancoDeRegistros()
+    etiquetas=Estructura(etiquetas)
+    etiquetas.iniciar('etiquetas.txt',"letra")
+    bancoDeRegistros.iniciar('bancoDeRegistro.txt',"letra")
     memoriaRegistrosFinales=[]
     memoriaRegDeAcoplamiento=[]
     registrosDeAcoplamientoyContenido={}
@@ -94,7 +95,7 @@ def iniciarSimulacion():
             instruccion=crearInstruccion(linea,memoriaRegistrosDeAcoplamientoyFinales)
             memoriaInstrucciones.agregarInstruccion(pos,instruccion)
             pos = pos + 1
-    iniciarNotengoNiIdea(memoriaInstrucciones,bancoDeRegistros,alu,memoria,0,etiquetas,memoriaRegistrosDeAcoplamientoyFinales)
-    print(bancoDeRegistros.getBancoDeRegistros())
+    inicio(memoriaInstrucciones,bancoDeRegistros,alu,memoria,0,etiquetas,memoriaRegistrosDeAcoplamientoyFinales)
+    print(bancoDeRegistros.getMemoria())
     print(memoria.getMemoria())
 iniciarSimulacion()

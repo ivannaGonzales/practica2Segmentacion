@@ -12,6 +12,7 @@ class FaseWB(Fase):
         self.borrarFase("FaseWB")
         if(len(self.registrosAcumulados["FaseWB"])!=0):
             self.memoriaRegistrosDeAcoplamiento.borrarRegistroDeAcoplamiento("FaseMEMWB")
+
         self.escrituraDelNuevoValorPC()
         self.escribirEnBancoDeRegistros()
         return self.comprobarUltimaInstruccion()
@@ -20,19 +21,22 @@ class FaseWB(Fase):
         if (len(self.registrosAcumulados["FaseMEM"]) >= 2):
             registrosAnteriores = self.registrosAcumulados["FaseMEM"]
             instruccion = registrosAnteriores[0]
-            if (instruccion != None):
+            if (not instruccion.esVacia()):
                 if (instruccion.esTipoR()):
                     # guardo registro de acoplamiento entre MEM/WB
                     rd = instruccion.getRd()
                     contenido = registrosAnteriores[1]
-                    self.memoriaRegistrosDeAcoplamiento.agregarContenidoEnRegistroAcoplamiento(rd, contenido,"FaseMEMWB")
-                    self.bancoDeRegistros.agregarRegistro(contenido, rd)
+
+                    self.memoriaRegistrosDeAcoplamiento.\
+                        agregarContenidoEnRegistroAcoplamiento(rd, contenido,"FaseMEMWB")
+
+                    self.bancoDeRegistros.agregarClaveValor(rd,contenido)
                     self.registrosAcumulados["FaseWB"].append(rd)
                 elif (instruccion.esLw()):
                     rt = instruccion.getRt()
                     contenido = registrosAnteriores[1]
                     self.memoriaRegistrosDeAcoplamiento.agregarContenidoEnRegistroAcoplamiento(rt, contenido,"FaseMEMWB")
-                    self.bancoDeRegistros.agregarRegistro(contenido, rt)
+                    self.bancoDeRegistros.agregarClaveValor(rt,contenido)
                     self.registrosAcumulados["FaseWB"].append(rt)
 
     def introducirBurbuja(self):
@@ -43,7 +47,7 @@ class FaseWB(Fase):
         registros = self.registrosAcumulados["FaseWB"]
         instruccionFaseIF= self.getInstruccionEnFaseIF()
         instruccionEnFaseID = self.getInstruccionEnFaseID()
-        if(instruccionFaseIF != None):
+        if(instruccionFaseIF != None): #None no tiene atributo Vacia
             #Primera burbuja
             if(instruccionFaseIF.esBeq()):
                 self.introducirBurbuja()

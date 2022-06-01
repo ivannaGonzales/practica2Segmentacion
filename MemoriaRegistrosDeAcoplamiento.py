@@ -16,13 +16,13 @@ class MemoriaRegistrosDeAcoplamiento():
         self.registroDeAcoplamientoPorFase[fase]=registro
         self.registrosDeAcoplamiento.append(registro)
     def getContenidoDeRegistroDeAcoplamiento(self,registro):
-        return self.registrosDeAcoplamientoyContenido[registro]
+        return self.registrosDeAcoplamientoyContenido.get(registro)
     def borrarRegistroDeAcoplamiento(self,fase):
         registroDeAcoplamiento=self.registroDeAcoplamientoPorFase.get(fase)
         if(registroDeAcoplamiento!=None):
             self.registrosDeAcoplamiento.remove(registroDeAcoplamiento)
             self.registroDeAcoplamientoPorFase.pop(fase)
-            if (not registroDeAcoplamiento in self.registrosDeAcoplamiento):  # osea si todavia esta no se borra
-                self.registrosDeAcoplamientoyContenido.pop(registroDeAcoplamiento)
+            #if (not registroDeAcoplamiento in self.registrosDeAcoplamiento):  # osea si todavia esta no se borra
+            self.registrosDeAcoplamientoyContenido.pop(registroDeAcoplamiento)
     def agregarRegistroFinal(self,registro):
         self.memoriaRegistrosFinal.append(registro)
