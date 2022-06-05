@@ -36,8 +36,6 @@ class FaseEX(Fase):
                     regSiguiente.append(rt)
                     regSiguiente.append(direccionMemoria)
                 elif(instruccion.esTipoR()):
-
-
                     rsID=registrosAnteriores[1]
                     rtID=registrosAnteriores[2]
 

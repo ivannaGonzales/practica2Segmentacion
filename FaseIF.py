@@ -26,13 +26,11 @@ class FaseIF(Fase):
         self.pc=self.pc+1
         return self.pc
     def iniciar(self):
-        #solo me da la instruccion
         instruccionActual = self.getInstruccionLeida()
-        #quiero comprobar que la instruccion actual es lw y la anterior es un None
+        #instruccion actual es la ultima
         if(self.pc == len(self.memoriaInstrucciones.getMemoriaDeInstrucciones())):
             pcIncrementado = self.pc #no lo aumento
         else:
-            #si es -1 me cojo el de la instruccion anterior
             if(self.pc==-1):
                 #cojo el pcIncrementado de la instruccionAnterior
                 if (len(self.registrosAcumulados["FaseIF"]) != 0):

@@ -56,7 +56,7 @@ def inicio(memoriaInstrucciones, bancoDeRegistros, alu, memoria, pc, etiquetas,m
     registrosAcumulados["FaseIF"] = []
     parar=False
     #puedo tener algo asi como, una memoria de registros que sean destino, entonce
-    while i <= len(memoriaInstrucciones.getMemoriaDeInstrucciones()) and not parar:
+    while not parar:
         faseWB = FaseWB(bancoDeRegistros, registrosAcumulados,parar,
                         memoriaRegistrosDeAcoplamiento)#acaba cuanfo el acaba
         parar=faseWB.iniciar()  # escribe en registros
@@ -67,8 +67,7 @@ def inicio(memoriaInstrucciones, bancoDeRegistros, alu, memoria, pc, etiquetas,m
         faseID = FaseID(registrosAcumulados, bancoDeRegistros,etiquetas)  # lee en registros
         faseID.iniciar()  # devuelve rs y rt
         faseIF = FaseIF(pc, memoriaInstrucciones, registrosAcumulados)
-        registros=faseIF.iniciar()  # devuelve el pc y la instruccion leida
-        i=registros[1]-1#i es igual al pc, espero
+        faseIF.iniciar()  # devuelve el pc y la instruccion leida
 def iniciarSimulacion():
     f = open('instrucciones.txt', 'r')
     pos=0

@@ -39,6 +39,7 @@ class FaseID(Fase):
                     registros.append(pcIncrementado)
                     #tengo que decirle a la siguiente fase de IF que hay que intoducir una isntruccion nula
                 elif(instruccion.esLw()):
+
                     rs=self.bancoDeRegistros.getContenido(instruccion.getRs())
                     registros.append(rs)
 

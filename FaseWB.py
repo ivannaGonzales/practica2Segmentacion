@@ -21,7 +21,7 @@ class FaseWB(Fase):
         if (len(self.registrosAcumulados["FaseMEM"]) >= 2):
             registrosAnteriores = self.registrosAcumulados["FaseMEM"]
             instruccion = registrosAnteriores[0]
-            if (not instruccion.esVacia()):
+            if (instruccion !=None):
                 if (instruccion.esTipoR()):
                     # guardo registro de acoplamiento entre MEM/WB
                     rd = instruccion.getRd()
@@ -47,7 +47,7 @@ class FaseWB(Fase):
         registros = self.registrosAcumulados["FaseWB"]
         instruccionFaseIF= self.getInstruccionEnFaseIF()
         instruccionEnFaseID = self.getInstruccionEnFaseID()
-        if(instruccionFaseIF != None): #None no tiene atributo Vacia
+        if(instruccionFaseIF != None):
             #Primera burbuja
             if(instruccionFaseIF.esBeq()):
                 self.introducirBurbuja()
@@ -57,6 +57,7 @@ class FaseWB(Fase):
                 self.introducirBurbuja()
             else: #de manera normal
                 registros.append(self.registrosAcumulados["FaseIF"][1])
+
         elif(instruccionEnFaseID != None):
             if(instruccionEnFaseID.esBeq()):
                 self.introducirBurbuja() #Segunda burbuja
@@ -64,6 +65,7 @@ class FaseWB(Fase):
                 #escribir pcsalto
                 pcSalto=self.registrosAcumulados["FaseID"][1]
                 registros.append(pcSalto)
+
             elif(instruccionEnFaseID.esLw()):
                 pcSiguienteInstruccion=self.registrosAcumulados["FaseIF"][1]
                 registros.append(pcSiguienteInstruccion)
@@ -85,7 +87,6 @@ class FaseWB(Fase):
             instruccionAnterior = self.registrosAcumulados["FaseIF"][0]
             return instruccionAnterior
     def escribirSaltoBeq(self):
-        # La instruccion anterior a none era una instruccion beq
         registros=self.registrosAcumulados["FaseWB"]
         if(self.registrosAcumulados["FaseEX"][3]==0): #es decir que si se produce el salto
             registros = self.registrosAcumulados["FaseWB"]
