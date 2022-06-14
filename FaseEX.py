@@ -46,18 +46,11 @@ class FaseEX():
                         #Puede usar de entrada de la ALU tanto como los registros de acoplamiento de EXMEM y de MEMWB
                         #AHORA VOY A PREGUNTAR SI LA INSTRUCCION ES ANTERIOR ES LW, PORQUE CREO BURBUJA Y BORRO
                         q=instruccion.getRs()
-                        hi=instruccion.getRs()
+                        hi=instruccion.getRt()
                         if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(instruccion.getRs())):
-                            if(len(self.registrosAcumulados["FaseMEM"])!=0):
-                                instruccionAnterior = self.registrosAcumulados["FaseMEM"][0]
-                                if(instruccionAnterior != None):
-                                    if(instruccionAnterior.esLw()):
-                                        if(instruccionAnterior.getRt()==instruccion.getRs()):
-                                            #necesito borrar la instruccion actual y colocar un None
-                                            self.borrarInstruccion(instruccion)
                             if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(instruccion.getRs())):
                                 rs=self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(instruccion.getRs())
-                        elif(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(instruccion.getRt())):
+                        if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(instruccion.getRt())):
                             if(self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(instruccion.getRt())):
                                 rt=self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(instruccion.getRt())
                     if(instruccion.esAdd()):
@@ -88,12 +81,7 @@ class FaseEX():
                     regSiguiente.append(pcRamificacion)
                     pcIncrementado=registrosAnteriores[4]
                     regSiguiente.append(pcIncrementado)
-    def borrarInstruccion(self,instruccion):
-        #Hasta aqui tengo que borrar la fase IF,ID y la EX
-        self.registrosAcumulados["FaseEX"]=[]
-        self.registrosAcumulados["FaseEX"]=[None]
-        self.registrosAcumulados["FaseID"]=[None]
-        self.registrosAcumulados["FaseIF"]=[None]
+
 
 
 

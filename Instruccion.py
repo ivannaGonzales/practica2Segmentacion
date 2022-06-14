@@ -1,15 +1,10 @@
 class Instruccion():
-    def __init__(self,tipo,rs,rt):
+    def __init__(self,tipo):
         self.tipo=tipo
-        self.rs=rs
-        self.rt=rt
+
 
     def getTipo(self):
         return self.tipo
-    def getRs(self):
-
-    def getRt(self):
-        return self.rt
     def esLw(self):
         return self.tipo=="lw"
     def esTipoR(self):

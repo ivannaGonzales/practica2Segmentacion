@@ -1,7 +1,9 @@
 from Instruccion import Instruccion
 class TipoBeq(Instruccion):
     def __init__(self,tipo,rs,rt,etiqueta):
-        Instruccion.__init__(self,tipo,rs,rt)
+        Instruccion.__init__(self,tipo)
         self.etiqueta=etiqueta
+        self.rs=rs
+        self.rt=rt
     def getEtiqueta(self):
         return self.etiqueta

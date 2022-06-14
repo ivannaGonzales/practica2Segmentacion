@@ -32,9 +32,9 @@ class FaseWB():
                 elif (instruccion.esLw()):
                     rt = instruccion.getRt()
                     contenido = registrosAnteriores[1]
-                    self.memoriaRegistrosDeAcoplamiento.agregarContenidoEnRegistroAcoplamiento(rt, contenido,
-                                                                                               "FaseMEMWB")
+                    self.memoriaRegistrosDeAcoplamiento.agregarContenidoEnRegistroAcoplamiento(rt, contenido,"FaseMEMWB")
                     self.bancoDeRegistros.agregarRegistro(contenido, rt)
+                    self.registrosAcumulados["FaseWB"].append(rt)
 
     def introducirBurbuja(self):
         registros = self.registrosAcumulados["FaseWB"]
@@ -48,8 +48,10 @@ class FaseWB():
                 self.introducirBurbuja() #Primera Burbuja
             elif(instruccionFaseIF.esTipoJ()):
                 self.introducirBurbuja()
+            elif(instruccionFaseIF.esLw()):
+                self.introducirBurbuja()
             else: #de manera normal
-                    registros.append(self.registrosAcumulados["FaseIF"][1])
+                registros.append(self.registrosAcumulados["FaseIF"][1])
         instruccionEnFaseID=self.getInstruccionEnFaseID()
         if(instruccionEnFaseID != None):
             if(instruccionEnFaseID.esBeq()):
@@ -58,7 +60,9 @@ class FaseWB():
                 #escribir pcsalto
                 pcSalto=self.registrosAcumulados["FaseID"][1]
                 registros.append(pcSalto)
-
+            elif(instruccionEnFaseID.esLw()):
+                pcSiguienteInstruccion=self.registrosAcumulados["FaseIF"][2]
+                registros.append(pcSiguienteInstruccion)
         if(len(self.registrosAcumulados["FaseEX"]) == 6):
             self.escribirSaltoBeq()
         else:
@@ -78,18 +82,10 @@ class FaseWB():
         registros=self.registrosAcumulados["FaseWB"]
         if(self.registrosAcumulados["FaseEX"][3]==0): #es decir que si se produce el salto
             registros = self.registrosAcumulados["FaseWB"]
-            registros.append(self.registrosAcumulados["FaseEX"][4])#se introduce la direccion de salt
+            registros.append(self.registrosAcumulados["FaseEX"][4])
         else:
-            registros.append(self.registrosAcumulados["FaseEX"][5]) #se introduce la direccion de salto
+            registros.append(self.registrosAcumulados["FaseEX"][5])
 
-    def comprobarUltimaInstruccion2(self):
-        #aqui ya deberia parar
-        if (len(self.registrosAcumulados["FaseMEM"]) >= 2):
-            if(len(self.registrosAcumulados["FaseIF"]) > 0):
-                if(self.registrosAcumulados["FaseIF"][1] == len(self.memoriaDeInstrucciones)):
-                    self.parar = True
-                    self.registrosAcumulados["FaseWB"].append(self.parar)
-                    return self.parar
     def comprobarUltimaInstruccion(self):
         if(len(self.registrosAcumulados["FaseMEM"])!= 0):
             if(self.registrosAcumulados["FaseID"][0]==None and self.registrosAcumulados["FaseEX"][0] == None
