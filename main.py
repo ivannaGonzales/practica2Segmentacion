@@ -25,13 +25,11 @@ def crearInstruccion(linea,memoriaRegistrosDeAcoplamientoyFinales):
     registros=registros.split(",")
     if(tipo=="add" or tipo=="sub" or tipo=="mul"):
         rd=registros[0]
-        memoriaRegistrosDeAcoplamientoyFinales.agregarRegistroFinal(rd)
         rs=registros[1]
         rt=registros[2]
         instruccion=TipoR(tipo,rs,rt,rd)
     elif(tipo=="sw"or tipo=="lw"):
         rt=registros[0]
-        memoriaRegistrosDeAcoplamientoyFinales.agregarRegistroFinal(rt)
         offsetyrs=registros[1]
         offsetyrs=offsetyrs.split("(")
         offset=offsetyrs[0]
@@ -55,10 +53,10 @@ def inicio(memoriaInstrucciones, bancoDeRegistros, alu, memoria, pc, etiquetas,m
     registrosAcumulados["FaseWB"] = []
     registrosAcumulados["FaseIF"] = []
     parar=False
-    #puedo tener algo asi como, una memoria de registros que sean destino, entonce
+
     while not parar:
         faseWB = FaseWB(bancoDeRegistros, registrosAcumulados,parar,
-                        memoriaRegistrosDeAcoplamiento)#acaba cuanfo el acaba
+                        memoriaRegistrosDeAcoplamiento)
         parar=faseWB.iniciar()  # escribe en registros
         faseMEM = FaseMEM(registrosAcumulados, memoria,memoriaRegistrosDeAcoplamiento)
         faseMEM.iniciar()  # escribe o leo en memoria
@@ -68,6 +66,7 @@ def inicio(memoriaInstrucciones, bancoDeRegistros, alu, memoria, pc, etiquetas,m
         faseID.iniciar()  # devuelve rs y rt
         faseIF = FaseIF(pc, memoriaInstrucciones, registrosAcumulados)
         faseIF.iniciar()  # devuelve el pc y la instruccion leida
+        pc=faseIF.getPc()
 def iniciarSimulacion():
     f = open('instrucciones.txt', 'r')
     pos=0
@@ -82,11 +81,9 @@ def iniciarSimulacion():
     etiquetas=Estructura(etiquetas)
     etiquetas.iniciar('etiquetas.txt',"letra")
     bancoDeRegistros.iniciar('bancoDeRegistro.txt',"letra")
-    memoriaRegistrosFinales=[]
-    memoriaRegDeAcoplamiento=[]
     registrosDeAcoplamientoyContenido={}
     registroDeAcoplamientoPorFase={}
-    memoriaRegistrosDeAcoplamientoyFinales=MemoriaRegistrosDeAcoplamiento(memoriaRegistrosFinales,memoriaRegDeAcoplamiento,registrosDeAcoplamientoyContenido,registroDeAcoplamientoPorFase)
+    memoriaRegistrosDeAcoplamientoyFinales=MemoriaRegistrosDeAcoplamiento(registrosDeAcoplamientoyContenido,registroDeAcoplamientoPorFase)
     alu=ALU()
     for linea in f:
         linea=linea.strip()

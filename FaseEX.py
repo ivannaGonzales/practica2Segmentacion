@@ -1,5 +1,3 @@
-#Calculo de la direccion de memoria, el calculo se realiza a traves de la UAL
-#Calculo de la direccion de memoria, el calculo se realiza a traves de la UAL
 from ALU import ALU
 from Fase import Fase
 from TipoR import TipoR
@@ -17,41 +15,49 @@ class FaseEX(Fase):
             self.borrarFase("FaseEX")
             regSiguiente = self.registrosAcumulados["FaseEX"]
             regSiguiente.append(instruccion)
+            print("---------------FASE EX---------------")
+            if (instruccion != None):
+                print("Instruccion de tipo ", instruccion.getTipo())
+            else:
+                print("Instruccion vacia")
             if(instruccion!=None):
                 if(instruccion.esLw()):
                     offset=instruccion.getOffset()
                     rsID=registrosAnteriores[1]
                     rs = self.comprobarRegistroAcoplamiento(instruccion.getRs(), rsID)
                     direccionMemoria=self.alu.getResultado(offset,rs,"suma")
+                    print("Calculo de la direccion de memoria", direccionMemoria)
+                    print("Registro rs", rs)
                     regSiguiente.append(rs)
                     regSiguiente.append(direccionMemoria)
                 elif(instruccion.esSw()):
                     offset=instruccion.getOffset()
                     rsID=registrosAnteriores[1]
                     rtID=registrosAnteriores[2]
-                    rs = self.comprobarRegistroAcoplamiento(instruccion.getRs(), rsID)
+                    rs = self.comprobarRegistroAcoplamiento(instruccion.getRs(), rsID) #valor numerico
                     rt = self.comprobarRegistroAcoplamiento(instruccion.getRt(), rtID)
                     direccionMemoria = self.alu.getResultado(offset, rs, "suma")
+                    print("Calculo de la direccion de memoria", direccionMemoria)
+                    print("Registro rs", rs)
+                    print("Resgistro rt",rt)
                     regSiguiente.append(rs)
                     regSiguiente.append(rt)
                     regSiguiente.append(direccionMemoria)
                 elif(instruccion.esTipoR()):
                     rsID=registrosAnteriores[1]
                     rtID=registrosAnteriores[2]
-
                     # Puede usar de entrada de la ALU tanto como los registros de acoplamiento de EXMEM y de MEMWB
-
                     rs=self.comprobarRegistroAcoplamiento(instruccion.getRs(),rsID)
                     rt=self.comprobarRegistroAcoplamiento(instruccion.getRt(),rtID)
-
-
                     if(instruccion.esAdd()):
                         resultado=self.alu.getResultado(rs,rt,"suma")
                     elif(instruccion.esSub()):
                         resultado=self.alu.getResultado(rs,rt,"resta")
                     else:
                         resultado=self.alu.getResultado(rs,rt,"multiplicacion")
-
+                    print("Registro rs ",rs)
+                    print("Registro rt ",rt)
+                    print("Resultado ",resultado)
                     regSiguiente.append(rs)
                     regSiguiente.append(rt)
                     regSiguiente.append(resultado)
@@ -69,15 +75,19 @@ class FaseEX(Fase):
                     pcIncrementado=registrosAnteriores[4]
                     regSiguiente.append(pcIncrementado)
 
+            print(regSiguiente)
+
 
 
     def comprobarRegistroAcoplamiento(self,registro,registroNumerico):
-        nuevoRegistro=registroNumerico
-        if (self.memoriaRegistrosFinalesyAcoplamiento.esRegistroFinal(registro)):
-            if (self.memoriaRegistrosFinalesyAcoplamiento.esRegistroDeAcoplamiento(registro)):
-                nuevoRegistro= self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(
+        nuevoRegistro= self.memoriaRegistrosFinalesyAcoplamiento.getContenidoDeRegistroDeAcoplamiento(
                     registro)
-        return nuevoRegistro
+        if(nuevoRegistro != None):
+            print("El registro ",registro," ha cambiado su valor debido al forwarding")
+            print("En la fase ID el registro", registro, "tenia valor", registroNumerico, "ahora es", nuevoRegistro)
+            return nuevoRegistro
+        else:
+            return registroNumerico
 
 
 

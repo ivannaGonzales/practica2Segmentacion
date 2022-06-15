@@ -21,7 +21,7 @@ class Estructura():
             clave=int(clave)
             valor=int(valor)
         else:
-            #la clavee sera un string
+            #la clave sera un string
             valor=int(valor)
 
         self.agregarClaveValor(clave,valor)
