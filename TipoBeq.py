@@ -7,3 +7,8 @@ class TipoBeq(Instruccion):
         self.rt=rt
     def getEtiqueta(self):
         return self.etiqueta
+    def getRs(self):
+        return self.rs
+    def getRt(self):
+        return self.rt
+

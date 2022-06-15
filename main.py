@@ -1,3 +1,4 @@
+from Estructura import Estructura
 from MemoriaDeInstrucciones import MemoriaDeInstrucciones
 from Instruccion import Instruccion
 from TipoI import TipoI
@@ -22,15 +23,13 @@ def crearInstruccion(linea,memoriaRegistrosDeAcoplamientoyFinales):
         instruccion=TipoJ(tipo,etiqueta)
     registros=contenidoInstruccion[1]
     registros=registros.split(",")
-    if(tipo=="add" or tipo=="sub"):
+    if(tipo=="add" or tipo=="sub" or tipo=="mul"):
         rd=registros[0]
-        memoriaRegistrosDeAcoplamientoyFinales.agregarRegistroFinal(rd)
         rs=registros[1]
         rt=registros[2]
         instruccion=TipoR(tipo,rs,rt,rd)
     elif(tipo=="sw"or tipo=="lw"):
         rt=registros[0]
-        memoriaRegistrosDeAcoplamientoyFinales.agregarRegistroFinal(rt)
         offsetyrs=registros[1]
         offsetyrs=offsetyrs.split("(")
         offset=offsetyrs[0]
@@ -45,7 +44,7 @@ def crearInstruccion(linea,memoriaRegistrosDeAcoplamientoyFinales):
     return instruccion
 
 
-def iniciarNotengoNiIdea(memoriaInstrucciones, bancoDeRegistros, alu, memoria, pc, etiquetas,memoriaRegistrosDeAcoplamiento):
+def inicio(memoriaInstrucciones, bancoDeRegistros, alu, memoria, pc, etiquetas,memoriaRegistrosDeAcoplamiento):
     i = 0
     registrosAcumulados = {}  # se va acumulando todos los registros
     registrosAcumulados["FaseID"] = []
@@ -54,39 +53,37 @@ def iniciarNotengoNiIdea(memoriaInstrucciones, bancoDeRegistros, alu, memoria, p
     registrosAcumulados["FaseWB"] = []
     registrosAcumulados["FaseIF"] = []
     parar=False
-    #puedo tener algo asi como, una memoria de registros que sean destino, entonce
-    while i <= len(memoriaInstrucciones.getMemoriaDeInstrucciones()) and not parar:
-        faseWB = FaseWB(bancoDeRegistros, registrosAcumulados,parar,memoriaInstrucciones.getMemoriaDeInstrucciones(),
-                        memoriaRegistrosDeAcoplamiento)#acaba cuanfo el acaba
+
+    while not parar:
+        faseWB = FaseWB(bancoDeRegistros, registrosAcumulados,parar,
+                        memoriaRegistrosDeAcoplamiento)
         parar=faseWB.iniciar()  # escribe en registros
         faseMEM = FaseMEM(registrosAcumulados, memoria,memoriaRegistrosDeAcoplamiento)
         faseMEM.iniciar()  # escribe o leo en memoria
-        faseEX = FaseEX(registrosAcumulados, alu,memoriaRegistrosDeAcoplamiento,memoriaInstrucciones)
+        faseEX = FaseEX(registrosAcumulados, alu,memoriaRegistrosDeAcoplamiento)
         faseEX.iniciar()  # ejecuta los datos
         faseID = FaseID(registrosAcumulados, bancoDeRegistros,etiquetas)  # lee en registros
         faseID.iniciar()  # devuelve rs y rt
         faseIF = FaseIF(pc, memoriaInstrucciones, registrosAcumulados)
-        registros=faseIF.iniciar()  # devuelve el pc y la instruccion leida
-        i=registros[1]-1#i es igual al pc, espero
+        faseIF.iniciar()  # devuelve el pc y la instruccion leida
+        pc=faseIF.getPc()
 def iniciarSimulacion():
     f = open('instrucciones.txt', 'r')
     pos=0
     memoria={}
-    memoria=Memoria(memoria)
-    memoria.iniciar()
+    memoria=Estructura(memoria)
+    memoria.iniciar('memoria.txt',"numero")
     memoriaDeInstrucciones={}
     memoriaInstrucciones=MemoriaDeInstrucciones(memoriaDeInstrucciones)
     bancoDeRegistros={}
-    bancoDeRegistros=BancoDeRegistros(bancoDeRegistros)
+    bancoDeRegistros=Estructura(bancoDeRegistros)
     etiquetas={}
-    etiquetas=MemoriaDeEtiquetas(etiquetas)
-    etiquetas.iniciarMemoriaDeEtiquetas()
-    bancoDeRegistros.iniciarbancoDeRegistros()
-    memoriaRegistrosFinales=[]
-    memoriaRegDeAcoplamiento=[]
+    etiquetas=Estructura(etiquetas)
+    etiquetas.iniciar('etiquetas.txt',"letra")
+    bancoDeRegistros.iniciar('bancoDeRegistro.txt',"letra")
     registrosDeAcoplamientoyContenido={}
     registroDeAcoplamientoPorFase={}
-    memoriaRegistrosDeAcoplamientoyFinales=MemoriaRegistrosDeAcoplamiento(memoriaRegistrosFinales,memoriaRegDeAcoplamiento,registrosDeAcoplamientoyContenido,registroDeAcoplamientoPorFase)
+    memoriaRegistrosDeAcoplamientoyFinales=MemoriaRegistrosDeAcoplamiento(registrosDeAcoplamientoyContenido,registroDeAcoplamientoPorFase)
     alu=ALU()
     for linea in f:
         linea=linea.strip()
@@ -94,5 +91,7 @@ def iniciarSimulacion():
             instruccion=crearInstruccion(linea,memoriaRegistrosDeAcoplamientoyFinales)
             memoriaInstrucciones.agregarInstruccion(pos,instruccion)
             pos = pos + 1
-    iniciarNotengoNiIdea(memoriaInstrucciones,bancoDeRegistros,alu,memoria,0,etiquetas,memoriaRegistrosDeAcoplamientoyFinales)
+    inicio(memoriaInstrucciones,bancoDeRegistros,alu,memoria,0,etiquetas,memoriaRegistrosDeAcoplamientoyFinales)
+    print(bancoDeRegistros.getMemoria())
+    print(memoria.getMemoria())
 iniciarSimulacion()

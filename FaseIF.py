@@ -1,21 +1,27 @@
 #Devuelve el pc y la instruccion leida
-class FaseIF():
+from Fase import Fase
+
+
+class FaseIF(Fase):
     def __init__(self,pc,memoriaInstrucciones,registrosAcumulados):
         self.pc=pc
         self.memoriaInstrucciones=memoriaInstrucciones
-        self.registrosAcumulados=registrosAcumulados#devuelve rs y rt
+        Fase.__init__(self,registrosAcumulados)
 
     def getInstruccionLeida(self):
         if(len(self.registrosAcumulados["FaseWB"])!=0):
             nuevoPc=self.registrosAcumulados["FaseWB"][0]
             self.pc=nuevoPc
             if(nuevoPc==-1):
+                print("Instruccion vacia")
                 return None
             else:
                 if(self.pc>=len(self.memoriaInstrucciones.getMemoriaDeInstrucciones())):
                     self.pc=nuevoPc
+                    print("Instruccion vacia")
                     return None
                 else:
+                    print("Instruccion de tipo", self.memoriaInstrucciones.getInstruccion(self.pc).getTipo())
                     return self.memoriaInstrucciones.getInstruccion(self.pc)
         else:
             return self.memoriaInstrucciones.getInstruccion(self.pc) #Esta seria la primera instruccion, leo la primera instruccion
@@ -23,26 +29,25 @@ class FaseIF():
         self.pc=self.pc+1
         return self.pc
     def iniciar(self):
-        #solo me da la instruccion
+        print("---------------FASE IF---------------")
         instruccionActual = self.getInstruccionLeida()
-        #quiero comprobar que la instruccion actual es lw y la anterior es un None
-        if(len(self.registrosAcumulados["FaseIF"])!=0):
-            pcInstruccionAnterior=self.registrosAcumulados["FaseIF"][1]
-        if(len(self.registrosAcumulados["FaseIF"])!=0):
-            #borro la instruccion anterior
-            self.registrosAcumulados["FaseIF"] = []
+
+        #instruccion actual es la ultima
         if(self.pc == len(self.memoriaInstrucciones.getMemoriaDeInstrucciones())):
-            pcIncrementado = self.pc
+            pcIncrementado = self.pc #no lo aumento
         else:
-            pcIncrementado=self.pc + 1
+            if(self.pc==-1):
+                #cojo el pcIncrementado de la instruccionAnterior
+                if (len(self.registrosAcumulados["FaseIF"]) != 0):
+                    pcIncrementado = self.registrosAcumulados["FaseIF"][1]
+            else:
+                pcIncrementado=self.pc+1 #normal
+        self.borrarFase("FaseIF")
         registros=self.registrosAcumulados["FaseIF"]
         registros.append(instruccionActual)
+        print("Pc incrementado", pcIncrementado)
         registros.append(pcIncrementado)
-        #si la instruccion es beq
-        if(instruccionActual != None):
-            if(instruccionActual.esBeq()):
-                registros.append(pcIncrementado)
-        else:
-            registros.append(pcIncrementado + 1)
-
+        print(registros)
         return registros
+    def getPc(self):
+        return self.pc
